@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Overlay</title>
+    <style>
+        body {
+            background: transparent;
+            overflow: hidden;
+            text-align: center;
+        }
+        .gift-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gift-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="giftAlert" class="gift-box">
+        <img id="giftImage" class="gift-image" src="" alt="Gift">
+        <div id="giftText"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
+    <script>
+        const socket = io("http://localhost:5000");
+
+        socket.on("new_gift", (data) => {
+            const giftAlert = document.getElementById("giftAlert");
+            const giftImage = document.getElementById("giftImage");
+            const giftText = document.getElementById("giftText");
+
+            giftImage.src = data.image;
+            giftText.innerText = `${data.user} sent ${data.count}x ${data.gift}`;
+            
+            giftAlert.style.opacity = "1";
+
+            setTimeout(() => {
+                giftAlert.style.opacity = "0";
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
